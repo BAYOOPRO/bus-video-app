@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:ms/core/AppLink.dart';
+import 'package:ms/core/app_link.dart';
 import '../core/api_handler.dart';
 import '../models/video_model.dart';
 

@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../core/AppLink.dart';
+import '../core/app_link.dart';
 
 class AdminLoginController {
   Future<Map<String, dynamic>> login(String email, String password) async {

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../core/api_handler.dart';
-import 'package:ms/core/AppLink.dart';
+import 'package:ms/core/app_link.dart';
 
 class VideoScreenController {
   VideoPlayerController? controller;

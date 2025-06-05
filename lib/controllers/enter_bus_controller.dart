@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ms/core/AppLink.dart';
+import 'package:ms/core/app_link.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

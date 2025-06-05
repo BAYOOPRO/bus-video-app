@@ -24,7 +24,7 @@ class AppLink {
   static const String checkBusNumber = "$server/check_bus_number.php";
   static const String updateBusStatus = "$server/update_bus_status.php";
   static const String getAllBuses = "$server/get_all_buses.php";
-  static const String EnterBusesCode = "$server/get_all_buses.php";
+  static const String enterBusesCode = "$server/get_all_buses.php";
   static const String logo = "$server/logo.jpg";
 
 

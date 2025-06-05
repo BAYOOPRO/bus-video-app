@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ms/screens/welcome_screen.dart';
 import 'package:video_player/video_player.dart';
+import 'package:ms/screens/welcome_screen.dart';
 import '../controllers/video_screen_controller.dart';
 
 class VideoScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _VideoScreenState extends State<VideoScreen> {
   void initState() {
     super.initState();
 
-    // ✅ نخلي الشاشة وضع أفقي
+    // 🌀 اجبار الوضع الأفقي
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -31,15 +31,18 @@ class _VideoScreenState extends State<VideoScreen> {
     _videoController = VideoScreenController();
 
     if (widget.videoUrl != null) {
-      // ✅ لو جاي من SelectVideoScreen بفيديو معين
       _videoController!.initializeVideo(widget.videoUrl!).then((_) {
+        if (!mounted) return;
         setState(() => _isLoading = false);
       });
     } else {
-      // ✅ لو جاي كجيست أو بدون رابط → نجيب الفيديو الحالي
       _videoController!.fetchAndCacheVideo(
-            () => setState(() => _isLoading = false),
             () {
+          if (!mounted) return;
+          setState(() => _isLoading = false);
+        },
+            () {
+          if (!mounted) return;
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("❌ فشل تحميل الفيديو")),
@@ -51,7 +54,7 @@ class _VideoScreenState extends State<VideoScreen> {
 
   @override
   void dispose() {
-    // ✅ نرجع الشاشة للوضع الطبيعي (عمودي)
+    // 🌀 رجع للوضع العمودي عند الخروج
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -72,6 +75,8 @@ class _VideoScreenState extends State<VideoScreen> {
       DeviceOrientation.portraitDown,
     ]);
 
+    if (!mounted) return;
+
     if (widget.cameFromGuest) {
       Navigator.pushAndRemoveUntil(
         context,
@@ -85,10 +90,12 @@ class _VideoScreenState extends State<VideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        await _handleBackNavigation();
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (!didPop) {
+          await _handleBackNavigation();
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -115,7 +122,6 @@ class _VideoScreenState extends State<VideoScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-
             ],
           )
               : _videoController?.controller != null &&
@@ -127,8 +133,7 @@ class _VideoScreenState extends State<VideoScreen> {
                 width: _videoController!.controller!.value.size.width,
                 height:
                 _videoController!.controller!.value.size.height,
-                child:
-                VideoPlayer(_videoController!.controller!),
+                child: VideoPlayer(_videoController!.controller!),
               ),
             ),
           )
@@ -136,5 +141,6 @@ class _VideoScreenState extends State<VideoScreen> {
         ),
       ),
     );
+
   }
 }

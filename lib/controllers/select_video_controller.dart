@@ -1,6 +1,7 @@
 import 'package:ms/core/api_handler.dart';
 
-import '../core/AppLink.dart';
+import '../core/app_link.dart';
+
 
 class SelectVideoController {
   bool isLoading = true;

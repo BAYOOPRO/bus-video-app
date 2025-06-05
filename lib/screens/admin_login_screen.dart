@@ -25,6 +25,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       _passwordController.text,
     );
 
+    if (!mounted) return; // ✅ حماية من استخدام context بعد await
+
     setState(() => _isLoading = false);
 
     if (result["status"] == "success") {
@@ -34,15 +36,14 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         context,
         MaterialPageRoute(builder: (_) => const AdminHomeScreen()),
       );
-
     } else {
       setState(() => _errorMessage = result["message"] ?? "فشل تسجيل الدخول");
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -1,9 +1,9 @@
 // ✅ lib/screens/select_video_screen.dart
 import 'package:flutter/material.dart';
-import 'package:ms/core/AppLink.dart';
+import 'package:ms/core/app_link.dart';
 import 'package:ms/screens/video_screen.dart';
 
-import '../controllers/Select_Video_Controller.dart';
+import '../controllers/select_video_controller.dart';
 
 class SelectVideoScreen extends StatefulWidget {
   const SelectVideoScreen({super.key});

@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../core/AppLink.dart';
+import '../core/app_link.dart';
 
 class BusModel {
   final String busNumber;

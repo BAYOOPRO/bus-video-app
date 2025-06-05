@@ -1,6 +1,6 @@
 // ✅ ملف: lib/screens/enter_bus_screen.dart
 import 'package:flutter/material.dart';
-import 'package:ms/core/AppLink.dart';
+import 'package:ms/core/app_link.dart';
 import 'package:ms/screens/video_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -31,24 +31,29 @@ class _EnterBusScreenState extends State<EnterBusScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('bus_number', busNumber);
       print("📦 busNumber: $busNumber");
+
+      if (!mounted) return; // ✅ تأكد إن الـ context لسه شغال
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const VideoScreen()),
       );
-
-
     } else {
+      if (!mounted) return; // ✅ بردو هنا لازم التأكد
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("❌ رقم الأتوبيس غير صحيح")),
       );
     }
 
-    setState(() => _loading = false);
+    if (mounted) {
+      setState(() => _loading = false);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,
