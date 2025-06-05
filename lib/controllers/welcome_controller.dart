@@ -20,7 +20,7 @@ class WelcomeController {
         ),
       );
     } else {
-      Navigator.pushNamed(context, '/enter_bus');
+      Navigator.pushNamed(context, '/enterBus');
     }
   }
 }
