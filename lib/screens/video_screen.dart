@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // ← للتحكم في اتجاه الشاشة
+import 'package:flutter/services.dart';
 import 'package:ms/screens/welcome_screen.dart';
 import 'package:video_player/video_player.dart';
 import '../controllers/video_screen_controller.dart';
 
 class VideoScreen extends StatefulWidget {
   final String? videoUrl;
-
   final bool cameFromGuest;
+
   const VideoScreen({super.key, this.videoUrl, this.cameFromGuest = false});
 
   @override
@@ -15,7 +15,7 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  late final VideoScreenController _videoController;
+  VideoScreenController? _videoController;
   bool _isLoading = true;
 
   @override
@@ -32,12 +32,12 @@ class _VideoScreenState extends State<VideoScreen> {
 
     if (widget.videoUrl != null) {
       // ✅ لو جاي من SelectVideoScreen بفيديو معين
-      _videoController.initializeVideo(widget.videoUrl!).then((_) {
+      _videoController!.initializeVideo(widget.videoUrl!).then((_) {
         setState(() => _isLoading = false);
       });
     } else {
       // ✅ لو جاي كجيست أو بدون رابط → نجيب الفيديو الحالي
-      _videoController.fetchAndCacheVideo(
+      _videoController!.fetchAndCacheVideo(
             () => setState(() => _isLoading = false),
             () {
           setState(() => _isLoading = false);
@@ -49,7 +49,6 @@ class _VideoScreenState extends State<VideoScreen> {
     }
   }
 
-
   @override
   void dispose() {
     // ✅ نرجع الشاشة للوضع الطبيعي (عمودي)
@@ -58,15 +57,15 @@ class _VideoScreenState extends State<VideoScreen> {
       DeviceOrientation.portraitDown,
     ]);
 
-    _videoController.markBusStatus("offline");
-    _videoController.controller?.pause();
-    _videoController.dispose();
+    _videoController?.markBusStatus("offline");
+    _videoController?.controller?.pause();
+    _videoController?.dispose();
     super.dispose();
   }
 
   Future<void> _handleBackNavigation() async {
-    await _videoController.markBusStatus("offline");
-    _videoController.controller?.pause();
+    await _videoController?.markBusStatus("offline");
+    _videoController?.controller?.pause();
 
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -84,13 +83,12 @@ class _VideoScreenState extends State<VideoScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         await _handleBackNavigation();
-        return false; // نمنع الرجوع التلقائي، ونتحكم إحنا فيه
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -104,18 +102,33 @@ class _VideoScreenState extends State<VideoScreen> {
         ),
         body: Center(
           child: _isLoading
-              ? const CircularProgressIndicator()
-              : _videoController.controller != null &&
-              _videoController.controller!.value.isInitialized
+              ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              ValueListenableBuilder(
+                valueListenable: _videoController!.loadingStatus,
+                builder: (context, value, _) => Text(
+                  value,
+                  style: const TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+            ],
+          )
+              : _videoController?.controller != null &&
+              _videoController!.controller!.value.isInitialized
               ? SizedBox.expand(
             child: FittedBox(
-              fit: BoxFit.fill, // ✅ يغطي الشاشة كاملة
+              fit: BoxFit.fill,
               child: SizedBox(
-                width:
-                _videoController.controller!.value.size.width,
+                width: _videoController!.controller!.value.size.width,
                 height:
-                _videoController.controller!.value.size.height,
-                child: VideoPlayer(_videoController.controller!),
+                _videoController!.controller!.value.size.height,
+                child:
+                VideoPlayer(_videoController!.controller!),
               ),
             ),
           )
